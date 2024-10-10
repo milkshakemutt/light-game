@@ -1,0 +1,120 @@
+[gd_scene load_steps=18 format=3 uid="uid://d3bddjk5uiyrm"]
+
+[ext_resource type="PackedScene" uid="uid://cj5pptyp4001g" path="res://src/Objects/Background.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://src/Objects/DarkPlatform.tscn" id="2"]
+[ext_resource type="Texture2D" uid="uid://4b1tidi86xly" path="res://assets/bedroom-dark.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://bupey7kg01ujo" path="res://assets/bedroom.png" id="4"]
+[ext_resource type="PackedScene" path="res://src/Actors/Player.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://h5ya3go5y1ci" path="res://src/Objects/LightArea.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://src/Objects/LightPlatform.tscn" id="7"]
+[ext_resource type="Shader" path="res://src/Shaders/CircularMask.gdshader" id="7_3i68n"]
+[ext_resource type="Texture2D" uid="uid://dep3ribxh54ub" path="res://assets/lightbulb.png" id="8"]
+[ext_resource type="PackedScene" path="res://src/Objects/PullLightSwitch.tscn" id="9"]
+
+[sub_resource type="RectangleShape2D" id="7"]
+size = Vector2(23.4498, 396.71)
+
+[sub_resource type="RectangleShape2D" id="2"]
+size = Vector2(824.062, 26.5868)
+
+[sub_resource type="RectangleShape2D" id="9"]
+size = Vector2(240, 12)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8lqnq"]
+shader = ExtResource("7_3i68n")
+shader_parameter/radius = 90.544
+shader_parameter/feathering = 1.0
+shader_parameter/center = Vector2(565.203, 241.756)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_k74w1"]
+radius = 359.81
+
+[sub_resource type="RectangleShape2D" id="6"]
+size = Vector2(295.428, 7.3222)
+
+[sub_resource type="RectangleShape2D" id="8"]
+size = Vector2(424.396, 8)
+
+[node name="Bedroom" type="Node2D"]
+
+[node name="Background" parent="." instance=ExtResource("1")]
+
+[node name="Boundaries" type="Node2D" parent="."]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Boundaries"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/StaticBody2D"]
+position = Vector2(287.916, 286.466)
+shape = SubResource("7")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="Boundaries"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/StaticBody2D2"]
+position = Vector2(712.691, 286.466)
+shape = SubResource("7")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="Boundaries"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/StaticBody2D3"]
+position = Vector2(500.578, 505.565)
+scale = Vector2(0.5, 0.5)
+shape = SubResource("2")
+
+[node name="DarkWorld" type="Sprite2D" parent="."]
+position = Vector2(500, 300)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3")
+
+[node name="DarkPlatform" parent="." instance=ExtResource("2")]
+position = Vector2(465.66, 315.64)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DarkPlatform"]
+position = Vector2(34.3557, 116.394)
+shape = SubResource("9")
+one_way_collision = true
+
+[node name="LightWorldViewport" type="SubViewport" parent="."]
+disable_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1024, 512)
+
+[node name="LightWorld" type="Sprite2D" parent="LightWorldViewport"]
+position = Vector2(500, 300)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("4")
+
+[node name="Lightbulb" type="Sprite2D" parent="LightWorldViewport"]
+position = Vector2(551, 316)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("8")
+
+[node name="LightArea" parent="." node_paths=PackedStringArray("light_world") instance=ExtResource("6")]
+light_world = NodePath("../LightWorldViewport")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LightArea"]
+material = SubResource("ShaderMaterial_8lqnq")
+position = Vector2(550.839, 346.801)
+shape = SubResource("CircleShape2D_k74w1")
+
+[node name="LightWorldPlatforms" type="Node2D" parent="."]
+
+[node name="LightPlatform" parent="LightWorldPlatforms" instance=ExtResource("7")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LightWorldPlatforms/LightPlatform"]
+position = Vector2(500.015, 402.582)
+shape = SubResource("6")
+one_way_collision = true
+
+[node name="LightPlatform3" parent="LightWorldPlatforms" instance=ExtResource("7")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LightWorldPlatforms/LightPlatform3"]
+position = Vector2(500.683, 477.774)
+shape = SubResource("8")
+
+[node name="LightSwitch" parent="." instance=ExtResource("9")]
+position = Vector2(693.017, 338.304)
+light_area_path = NodePath("../LightArea")
+
+[node name="Player" parent="." instance=ExtResource("5")]
+position = Vector2(526.07, 398.052)
